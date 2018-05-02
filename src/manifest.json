@@ -1,0 +1,49 @@
+{
+  "content_scripts": [
+    {
+      "css": [
+        "css/style.css"
+      ],
+      "js": [
+        "js/libs.min.js",
+        "js/main.js"
+      ],
+      "matches": [
+        "https://playcanvas.com/editor/*"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "description": "Customize your visual effects via Editor or programmatically",
+  "icons": {
+    "128": "icons/icon-128.png",
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "64": "icons/icon-64.png"
+  },
+  "browser_action": {
+    "default_icon": "icons/icon-48.png"
+  },
+  "manifest_version": 2,
+  "minimum_chrome_version": "18",
+  "name": "PlayCanvas FX Composer",
+  "permissions": [
+    "storage",
+    "downloads",
+    "<all_urls>"
+  ],
+  "update_url": "https://clients2.google.com/service/update2/crx",
+  "version": "0.1.1",
+  "externally_connectable": {
+    "matches": [
+      "https://playcanvas.com/editor/*"
+    ]
+  },
+  "web_accessible_resources": [
+    "css/style.css",
+    "html/panel.html",
+    "js/inject.js"
+  ]
+}
+
+
