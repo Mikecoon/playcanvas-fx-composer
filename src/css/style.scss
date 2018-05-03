@@ -1,3 +1,6 @@
+$overlayWidth: 1200px;
+$leftPanelWidth: 188px;
+
 #ui-toolbar>.content>.ui-button {
     &.ui-composer-btn {
         font-weight: bold;
@@ -13,3 +16,102 @@
     }
 }
 
+
+.ui-overlay.fx-composer > .content {
+
+    width: $overlayWidth;
+    height: 640px;
+    left: calc(50% - #{$overlayWidth} / 2);
+    top: calc(50% - 320px);
+
+    img.top {
+        display: block;
+        width: 480px;
+        height: auto;
+        padding: 0 16px;
+        background-color: #293538;
+    }
+
+    > .header {
+        display: block;
+        margin: 0;
+        padding-left: 16px;
+        text-transform: uppercase;
+        font-size: 16px;
+        line-height: 48px;
+        color: #5b7073;
+        background-color: #293538;
+
+        > .close {
+            float: right;
+            margin: 0;
+            padding: 0;
+            border: none;
+            width: 48px;
+            height: 48px;
+            line-height: 48px;
+            font-size: 20px;
+            text-align: center;
+            color: #5b7073;
+            background-color: transparent;
+            font-family: 'pc-icon';
+
+            &:hover {
+                color: #f60;
+                background-color: #20292b;
+            }
+        }
+    }
+}
+
+
+.composer-container {
+    height: calc(100% - 48px);
+
+    .content {
+        height: 100%;
+    }
+
+    .ui-panel.left {
+        background-color: #2c393c;
+        margin: 0;
+        padding: 0;
+        float: left;
+        width: $leftPanelWidth;
+        height: 100%;
+        border-right: 1px solid #232e30;
+    }
+    .ui-panel.right {
+        float: left;
+        width: calc(100% - #{$leftPanelWidth} - 1px);
+        height: 100%;
+        position: relative;
+
+
+        .node {
+            width: 150px;
+            height: 45px;
+            position: absolute;
+            background-color: #293538;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            border: 1px solid #5f5f5f;
+
+            &.fixed {
+                border-color: #FF6600;
+            }
+
+            &.fx {
+                border-style: dashed;
+            }
+
+            &:hover {
+                background-color: lighten(#293538, 2);
+            }
+        }
+    }
+}

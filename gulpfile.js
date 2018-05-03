@@ -16,7 +16,10 @@ var jimp = require("gulp-jimp-resize");
 
 gulp.task("scripts-libs", function() {
 	return gulp.src([
+		'src/libs/jsplumb/dist/js/jsplumb.min.js',
 		'src/libs/jquery/dist/jquery.min.js',
+        'src/libs/jquery-ui/jquery-ui.min.js',
+
 	])
 		.pipe(concat('libs.min.js'))
 		.pipe(gulp.dest("dist/js"));
@@ -75,7 +78,6 @@ gulp.task("clean", function() {
 });
 
 gulp.task("build", ['clean', "styles-libs",'styles', 'scripts-libs', 'scripts', "icons"], function() {
-
 	gulp.src("src/html/*.html").pipe(gulp.dest("dist/html"));
 	gulp.src("src/manifest.json").pipe(gulp.dest("dist/"));
 
@@ -84,9 +86,9 @@ gulp.task("build", ['clean', "styles-libs",'styles', 'scripts-libs', 'scripts', 
 
 gulp.task("html", function() {
 	return gulp.src([
-		"scr/html/*.html",
+		"src/html/*.html",
 	])
-		.pipe(gulp.dest("app"))
+		.pipe(gulp.dest("dist/html"))
         .pipe(browserSync.reload({stream: true}))
 });
 

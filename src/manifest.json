@@ -41,8 +41,9 @@
   },
   "web_accessible_resources": [
     "css/style.css",
-    "html/panel.html",
-    "js/inject.js"
+    "html/layout.html",
+    "js/inject.js",
+    "js/libs.min.js"
   ]
 }
 

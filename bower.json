@@ -1,0 +1,25 @@
+{
+  "name": "PlayCanvas-FX-Composer",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Mike Finch"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/Mikecoon/playcanvas-fx-composer",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "src/libs/",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.3.1"
+  },
+  "devDependencies": {
+    "jsplumb": "^2.6.9",
+    "jquery-ui": "^1.12.1"
+  }
+}
