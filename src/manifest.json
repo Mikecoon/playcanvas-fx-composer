@@ -43,7 +43,8 @@
     "css/style.css",
     "html/layout.html",
     "js/inject.js",
-    "js/libs.min.js"
+    "js/libs.min.js",
+    "js/composer.js"
   ]
 }
 

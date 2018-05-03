@@ -4,6 +4,13 @@ libs.src = chrome.extension.getURL('js/libs.min.js');
 libs.async = false;
 (document.head || document.documentElement).appendChild(libs);
 
+//  Composer classes
+let Composer = document.createElement('script');
+Composer.src = chrome.extension.getURL('js/composer.js');
+Composer.async = false;
+(document.head || document.documentElement).appendChild(Composer);
+
+
 //  Inject js
 let script = document.createElement('script');
 script.src = chrome.extension.getURL('js/inject.js');
@@ -25,6 +32,8 @@ let style = document.createElement('link');
 style.href = chrome.extension.getURL('css/style.css');
 style.rel="stylesheet";
 (document.head || document.documentElement).appendChild(style);
+
+
 
 
 

@@ -1,67 +1,11 @@
-class ComposerNode {
-
-    constructor(config) {
-
-        // Setup config
-        this.config = {
-            left: 150, top: 150,
-            name: "Unnamed", type: "layer",
-            out: true, in: true, fixed: false, plumb: null,
-        };
-
-        this.config = Object.assign(this.config, config);
-
-        // Create element
-        this.element = document.createElement("div");
-        this.element.classList.add("node");
-        this.element.classList.add(this.config.type);
-        if (this.config.fixed) this.element.classList.add("fixed");
-        this.element.id = this.name + "_" + this.type;
-        //this.element.id = "node-1";
-
-        // Set config
-        this.element.innerText = this.config.name;
-        this.left = this.config.left;
-        this.top = this.config.top;
-
-        ui.ContainerElement.call(this);
-    }
-
-    set left(newValue) {
-        this.element.style.left = newValue + "px";
-    }
-
-    set top(newValue) {
-        this.element.style.top = newValue + "px";
-    }
-
-    addToPlumb() {
-        let source = this.fixed ? this.plumb._fixedSourceEndpoint: this.plumb._sourceEndpoint;
-        let target = this.fixed ? this.plumb._fixedTargetEndpoint: this.plumb._targetEndpoint;
-
-        if (this.config.out) {
-            this.plumb.addEndpoint(this.id, source, {
-                anchor: "RightMiddle", uuid: this.name + "In"
-            });
-        }
-
-        if (this.config.in) {
-           this.plumb.addEndpoint(this.id, target, {
-                anchor: "LeftMiddle", uuid: this.name + "Out"
-            });
-        }
-    }
-
-    get plumb() {return this.config.plumb};
-    get fixed() {return this.config.fixed};
-    get name() {return this.config.name};
-    get type() {return this.config.type};
-    get id() {return this.element.id};
-}
 
 var composerDefaults = {
     name: "FX Composer",
     layoutUrl: null,
+    configFileName: "Composer",
+    configFileType: "json",
+    sourceLayer: "World",
+    screenLayer: "Immediate"
 };
 
 class Composer {
@@ -81,46 +25,54 @@ class Composer {
             let allLayers = editor.call('settings:project').get('layers');
             let layersOrder = editor.call('settings:project').get('layerOrder');
 
-            let customLayers = layersOrder.map((order, i) => {
 
-                let layer = allLayers[i];
+            this.getConfig().then(nodes => {
 
-                if (layer) {
-                    if (layer.name === "World") {
+                nodes.forEach(config => {
+
+                    // If World or Screen
+                    if (config.layer === composerDefaults.sourceLayer || config.layer === composerDefaults.screenLayer) {
+
+                        if (config.layer === "Immediate") config.name = "Screen";
+                        if (config.layer === "World") config.name = "World";
+
                         this.addNode({
-                            name: "World layer",
-                            top: 50,
-                            left: 100,
+                            name: config.name,
+                            type: "layer",
                             fixed: true,
-                            in: false
+                            in: config.name === "Screen",
+                            out: config.name === "World",
+                        })
+                    } else {
+                        this.addNode({
+                            name: config.layer + " layer",
+                            type: "layer",
+                            fixed: false,
                         })
                     }
+                })
 
-                    if (layer.name === "Immediate") {
-                        this.addNode({
-                            name: "Screen",
-                            top: 50,
-                            left: 300,
-                            fixed: true,
-                            out: false
-                        })
+                this.nodes.forEach((source, i) => {
+
+                    let target = this.nodes[nodes[i].out];
+
+                    console.log(source);
+                    console.log(target);
+
+                    if (source && target) {
+                        this.plumb.connect({
+                            uuids: [source.name + "In", target.name + "Out"],
+                            editable: true
+                        });
                     }
-                }
 
-                if  (order.layer > 4) {
-                    let layer = allLayers[order.layer];
-
-                    this.addNode({
-                        name: layer.name,
-                        top: 50,
-                        left: 500,
-                        type: "fx"
-                    })
-                }
-            });
-
-
-
+                   /* jsPlumb.connect({
+                        source:"aThirdElement",
+                        target:"yetAnotherElement",
+                        detachable:false
+                    });*/
+                })
+            })
         })
 
     }
@@ -129,12 +81,8 @@ class Composer {
 
         config.plumb = this.plumb;
         let node = new ComposerNode(config);
-
         this.workspace.append(node);
-
         node.addToPlumb();
-
-
         this.plumb.draggable(node.element, {
             containment:true
         });
@@ -292,6 +240,38 @@ class Composer {
         this.workspace = new ui.Panel();
         this.workspace.class.add("right");
         this.container.append(this.workspace);
+    }
+
+    getConfig() {
+
+        return new Promise((resolve, reject) => {
+            Ajax({ url: '{{url.api}}/projects/{{project.id}}/assets?view=coder', auth: true }) .on('load', function(status, data) {
+
+                var fileFound = false;
+
+                data.forEach(asset => {
+                    // Specific file
+                    if (asset.name === composerDefaults.configFileName && asset.type === composerDefaults.configFileType) {
+
+                        fileFound = true;
+
+                        // Load config from
+                        Ajax({
+                            url: asset.file.url,
+                            auth: true
+                        })
+                        .on('load', function (status, data) {
+                            return resolve(data);
+                        });
+                    }
+                })
+
+                if (!fileFound) return reject(false);
+
+                if (!data.length) return reject(false);
+            })
+        })
+
     }
 }
 
